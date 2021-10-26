@@ -10,7 +10,7 @@
 #define PLUGIN_NAME			"Swap players"
 #define PLUGIN_AUTHOR		"DeDstar"
 #define PLUGIN_DESCRIPTION 	"Swap 2 players' team"
-#define PLUGIN_VERSION		"1.0.0"
+#define PLUGIN_VERSION		"1.0.1"
 #define PLUGIN_URL			""
 
 // Force new-style declarations (Sourcepawn 1.7 and newer)
@@ -70,18 +70,12 @@ public Action CommandSwap(int client, int args) {
 	TF2_ChangeClientTeam(target1, target2Team);
 	TF2_ChangeClientTeam(target2, target1Team);
 	
-	PrintToChatAll("\x03[SM] \x01%%N has swapped %N and %N.", client, target1, target2);
+	PrintToChatAll("\x03[SM] \x01%N has swapped %N and %N.", client, target1, target2);
 	return Plugin_Handled;
 }
 
-bool IsValidClient(int client)
-{
-	/*
-	Prevents invalid client error in sourcemod error logs
-	*/
+bool IsValidClient(int client) {
 	if (client <= 0 || client > MaxClients || !IsClientInGame(client) || IsFakeClient(client) || IsClientSourceTV(client) || IsClientReplay(client))
-	{
 		return false;
-	}
 	return true;
 }
