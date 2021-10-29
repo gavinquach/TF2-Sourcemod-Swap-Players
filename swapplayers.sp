@@ -10,7 +10,7 @@
 #define PLUGIN_NAME			"Swap players"
 #define PLUGIN_AUTHOR		"DeDstar"
 #define PLUGIN_DESCRIPTION 	"Swap 2 players' team"
-#define PLUGIN_VERSION		"1.0.1"
+#define PLUGIN_VERSION		"1.0.2"
 #define PLUGIN_URL			""
 
 // Force new-style declarations (Sourcepawn 1.7 and newer)
@@ -59,19 +59,23 @@ public Action CommandSwap(int client, int args) {
 		return Plugin_Handled;
 	}
 	
-	TFTeam target1Team = TF2_GetClientTeam(target1);
-	TFTeam target2Team = TF2_GetClientTeam(target2);
+	PerformSwap(client, target1, target2);
+	return Plugin_Handled;
+}
+
+void PerformSwap(int client, int client1, int client2) {
+	TFTeam target1Team = TF2_GetClientTeam(client1);
+	TFTeam target2Team = TF2_GetClientTeam(client2);
 	
 	if (target1Team == target2Team) {
-		ReplyToCommand(client, "\x03[SM] \x01%N and %N are in the same team!", target1, target2);
-		return Plugin_Handled;
+		ReplyToCommand(client, "\x03[SM] \x01%N and %N are in the same team!", client1, client2);
+	} else {
+		LogAction(client, -1, "\"%L\" has swapped \"%L\" and \"%L\"", client, client1, client2);
+		TF2_ChangeClientTeam(client1, target2Team);
+		TF2_ChangeClientTeam(client2, target1Team);
+	
+		PrintToChatAll("\x03[SM] \x01%N has swapped %N and %N.", client, client1, client2);
 	}
-	
-	TF2_ChangeClientTeam(target1, target2Team);
-	TF2_ChangeClientTeam(target2, target1Team);
-	
-	PrintToChatAll("\x03[SM] \x01%N has swapped %N and %N.", client, target1, target2);
-	return Plugin_Handled;
 }
 
 bool IsValidClient(int client) {
